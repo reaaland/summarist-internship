@@ -1,6 +1,13 @@
+"use client";
+
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../store/store";
+import { openLoginModal } from "../store/features/authModalSlice";
 
 export default function Navbar() {
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
     <nav className="nav">
       <div className="nav__wrapper">
@@ -15,7 +22,12 @@ export default function Navbar() {
         </figure>
 
         <ul className="nav__list--wrapper">
-          <li className="nav__list nav__list--login">Login</li>
+          <li
+            className="nav__list nav__list--login"
+            onClick={() => dispatch(openLoginModal())}
+          >
+            Login
+          </li>
           <li className="nav__list nav__list--mobile">About</li>
           <li className="nav__list nav__list--mobile">Contact</li>
           <li className="nav__list nav__list--mobile">Help</li>
