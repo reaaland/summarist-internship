@@ -40,20 +40,22 @@ export default function AuthModal() {
         </p>
 
         {mode === "login" ? (
-          <button
-            type="button"
-            onClick={() => dispatch(openRegisterModal())}
-          >
-            Create an account
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => dispatch(openLoginModal())}
-          >
-            Already have an account? Log in
-          </button>
-        )}
+            <button
+                type="button"
+                className="auth-modal__switch"
+                onClick={() => dispatch(openRegisterModal())}
+            >
+                Create an account
+            </button>
+            ) : (
+            <button
+                type="button"
+                className="auth-modal__switch"
+                onClick={() => dispatch(openLoginModal())}
+            >
+                Already have an account? Log in
+            </button>
+            )}
       </div>
     </div>
   );
