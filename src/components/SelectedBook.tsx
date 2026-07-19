@@ -1,4 +1,5 @@
 import { Book } from "@/types/book";
+import "@/styles/selectedBook.css";
 
 interface SelectedBookProps {
   book: Book;
@@ -6,15 +7,32 @@ interface SelectedBookProps {
 
 export default function SelectedBook({ book }: SelectedBookProps) {
   return (
-    <section>
+  <section className="selected-book">
+    <div className="selected-book__subtitle">
+      {book.subTitle}
+    </div>
+
+    <div className="selected-book__image-wrapper">
       <img
+        className="selected-book__image"
         src={book.imageLink}
         alt={book.title}
       />
+    </div>
 
-      <h2>{book.title}</h2>
-      <p>{book.author}</p>
-      <p>{book.subTitle}</p>
-    </section>
-  );
+    <div className="selected-book__info">
+      <h2 className="selected-book__title">
+        {book.title}
+      </h2>
+
+      <p className="selected-book__author">
+        {book.author}
+      </p>
+
+      <p className="selected-book__type">
+        {book.type}
+      </p>
+    </div>
+  </section>
+);
 }

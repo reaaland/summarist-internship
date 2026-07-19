@@ -1,0 +1,48 @@
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.recommended,
+.suggested {
+    margin-top: 48px;
+}
+
+.recommended__title,
+.suggested__title {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.recommended__subtitle,
+.suggested__subtitle {
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+.recommended__books,
+.suggested__books {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.app-content {
+  margin-left: 220px;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: auto;
+  min-height: 0;
+  padding: 18px 32px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.app-content main {
+  padding: 24px 32px 32px;
+}
