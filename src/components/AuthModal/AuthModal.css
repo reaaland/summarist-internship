@@ -168,6 +168,13 @@
   cursor: pointer;
 }
 
+.auth-modal__error {
+  color: #d93025;
+  font-size: 14px;
+  text-align: center;
+  margin: 8px 0 16px;
+}
+
 @media (max-width: 480px) {
   .auth-modal__overlay {
     padding: 16px;

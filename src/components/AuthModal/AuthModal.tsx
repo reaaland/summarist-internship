@@ -10,15 +10,17 @@ import {
 } from "../../store/features/authModalSlice";
 import "./AuthModal.css";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-
+import { useRouter } from "next/navigation";
 import { auth } from "../../firebase/firebase";
 
 
 export default function AuthModal() {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
 const { isOpen, mode } = useSelector(
   (state: RootState) => state.authModal
@@ -28,10 +30,13 @@ const handleAuthSuccess = () => {
   setEmail("");
   setPassword("");
   setConfirmPassword("");
+  setErrorMessage("");
   dispatch(closeModal());
+  router.push("/for-you");
 };
 
 const handleSubmit = async () => {
+  setErrorMessage("");
   try {
     if (mode === "login") {
       await signInWithEmailAndPassword(auth, email, password);
@@ -39,7 +44,7 @@ const handleSubmit = async () => {
       handleAuthSuccess();
     } else {
       if (password !== confirmPassword) {
-        console.error("Passwords do not match.");
+        setErrorMessage("Passwords do not match.");
         return;
       }
 
@@ -47,8 +52,22 @@ const handleSubmit = async () => {
       console.log("Account created successfully!");
       handleAuthSuccess();
     }
-  } catch (error) {
-    console.error(error);
+    } catch (error: unknown) {
+    if (error instanceof Error) {
+      if (error.message.includes("auth/invalid-credential")) {
+        setErrorMessage("Incorrect email or password.");
+      } else if (error.message.includes("auth/email-already-in-use")) {
+        setErrorMessage("An account already exists with this email.");
+      } else if (error.message.includes("auth/invalid-email")) {
+        setErrorMessage("Please enter a valid email address.");
+      } else if (error.message.includes("auth/weak-password")) {
+        setErrorMessage("Password must be at least 6 characters.");
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+    } else {
+      setErrorMessage("Something went wrong. Please try again.");
+    }
   }
 };
 
@@ -139,6 +158,12 @@ return (
           </button>
         )}
 
+        {errorMessage && (
+          <p className="auth-modal__error">
+            {errorMessage}
+          </p>
+        )}
+
         <button
           type="submit"
           className="auth-modal__submit"
@@ -155,13 +180,15 @@ return (
         <button
           type="button"
           className="auth-modal__link"
-          onClick={() =>
+          onClick={() => {
+            setErrorMessage("");
+
             dispatch(
               mode === "login"
                 ? openRegisterModal()
                 : openLoginModal()
             )
-          }
+          }}
         >
           {mode === "login"
             ? "Create an account"
