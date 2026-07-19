@@ -1,6 +1,7 @@
 import { Book } from "@/types/book";
 import "@/styles/bookCard.css";
 import { BsStarFill } from "react-icons/bs";
+import Link from "next/link";
 
 interface BookCardProps {
   book: Book;
@@ -12,23 +13,26 @@ export default function BookCard({
   showPremium = false,
 }: BookCardProps) {
   return (
+  <Link
+    href={`/book/${book.id}`}
+    className="book-card__link"
+  >
     <div className="book-card">
-        {showPremium && book.subscriptionRequired && (
-    <div className="book-card__pill-wrapper">
-      <span className="book-card__pill">
-        Premium
-      </span>
-    </div>
-  )}
+      {showPremium && book.subscriptionRequired && (
+        <div className="book-card__pill-wrapper">
+          <span className="book-card__pill">
+            Premium
+          </span>
+        </div>
+      )}
 
-  <div className="book-card__image-wrapper">
+      <div className="book-card__image-wrapper">
         <img
           className="book-card__image"
           src={book.imageLink}
           alt={book.title}
         />
-
-     </div>
+      </div>
 
       <h3 className="book-card__title">{book.title}</h3>
 
@@ -38,10 +42,11 @@ export default function BookCard({
 
       <div className="book-card__details">
         <span className="book-card__rating">
-            <BsStarFill />
-            <span>{book.averageRating}</span>
+          <BsStarFill />
+          <span>{book.averageRating}</span>
         </span>
       </div>
     </div>
-  );
+  </Link>
+);
 }

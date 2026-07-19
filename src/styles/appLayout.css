@@ -1,0 +1,33 @@
+.app-content {
+  margin-left: 220px;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 0;
+  padding: 18px 32px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.app-content main {
+  padding: 24px 32px 32px;
+}
+
+@media (max-width: 900px) {
+  .app-content {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .app-header {
+    min-height: 70px;
+    padding: 14px 16px 14px 68px;
+  }
+
+  .app-content main {
+    padding: 24px 18px;
+  }
+}

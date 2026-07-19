@@ -7,6 +7,7 @@ import BookCard from "@/components/BookCard";
 import "@/styles/forYou.css";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
+import "@/styles/appLayout.css";
 
 export default function ForYouPage() {
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
