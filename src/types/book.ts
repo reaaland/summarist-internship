@@ -7,7 +7,7 @@ export interface Book {
   audioLink: string;
   totalRating: number;
   averageRating: number;
-  keyIdeas: number;
+  keyIdeas: string;
   type: string;
   status: "selected" | "recommended" | "suggested";
   subscriptionRequired: boolean;
