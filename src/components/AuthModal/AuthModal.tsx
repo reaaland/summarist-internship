@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../store/store";
 import {
@@ -8,19 +9,55 @@ import {
   openRegisterModal,
 } from "../../store/features/authModalSlice";
 import "./AuthModal.css";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+
+import { auth } from "../../firebase/firebase";
+
 
 export default function AuthModal() {
   const dispatch = useDispatch<AppDispatch>();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { isOpen, mode } = useSelector(
-    (state: RootState) => state.authModal
-  );
+const { isOpen, mode } = useSelector(
+  (state: RootState) => state.authModal
+);
 
-  if (!isOpen) {
-    return null;
+const handleAuthSuccess = () => {
+  setEmail("");
+  setPassword("");
+  setConfirmPassword("");
+  dispatch(closeModal());
+};
+
+const handleSubmit = async () => {
+  try {
+    if (mode === "login") {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("Logged in successfully!");
+      handleAuthSuccess();
+    } else {
+      if (password !== confirmPassword) {
+        console.error("Passwords do not match.");
+        return;
+      }
+
+      await createUserWithEmailAndPassword(auth, email, password);
+      console.log("Account created successfully!");
+      handleAuthSuccess();
+    }
+  } catch (error) {
+    console.error(error);
   }
+};
 
-  return (
+if (!isOpen) {
+  return null;
+}
+
+return (
+
   <div className="auth-modal__overlay">
     <div className="auth-modal">
       <button
@@ -53,19 +90,29 @@ export default function AuthModal() {
         <span>or</span>
       </div>
 
-      <form className="auth-modal__form">
+      <form
+        className="auth-modal__form"
+        onSubmit={(event) => {
+            event.preventDefault();
+            void handleSubmit();
+        }}
+        >
         <label htmlFor="email">Email</label>
         <input
-          id="email"
-          type="email"
-          placeholder="Email address"
+            id="email"
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
         />
 
         <label htmlFor="password">Password</label>
         <input
-          id="password"
-          type="password"
-          placeholder="Password"
+            id="password"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
         />
 
         {mode === "register" && (
@@ -74,9 +121,11 @@ export default function AuthModal() {
               Confirm password
             </label>
             <input
-              id="confirmPassword"
-              type="password"
-              placeholder="Confirm password"
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
             />
           </>
         )}
