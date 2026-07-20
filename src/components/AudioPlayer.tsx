@@ -9,6 +9,8 @@ import {
 } from "react-icons/fi";
 import type { Book } from "@/types/book";
 import "@/styles/audioPlayer.css";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "@/firebase/firebase";
 
 interface AudioPlayerProps {
   book: Book;
@@ -36,9 +38,27 @@ export default function AudioPlayer({ book }: AudioPlayerProps) {
       setDuration(audio.duration);
     };
 
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setCurrentTime(0);
+    const handleEnded = async () => {
+    setIsPlaying(false);
+    setCurrentTime(0);
+
+    const user = auth.currentUser;
+
+    if (!user) {
+        return;
+    }
+
+    try {
+        await setDoc(
+        doc(db, "users", user.uid, "finished", book.id),
+        {
+            ...book,
+            finishedAt: serverTimestamp(),
+        }
+        );
+    } catch (error) {
+        console.error("Error marking book as finished:", error);
+    }
     };
 
     audio.addEventListener("timeupdate", updateCurrentTime);
@@ -50,7 +70,7 @@ export default function AudioPlayer({ book }: AudioPlayerProps) {
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, []);
+  }, [book]);
 
   const togglePlayback = async () => {
     const audio = audioRef.current;
