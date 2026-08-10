@@ -8,9 +8,15 @@
   padding: 48px;
 }
 
-.settings-content--logged-out {
+.settings-search-header {
   display: flex;
-  min-height: 75vh;
+  justify-content: flex-end;
+  margin-bottom: 42px;
+}
+
+.settings-logged-out {
+  display: flex;
+  min-height: 60vh;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -24,11 +30,11 @@
   color: #032b41;
 }
 
-.settings-content--logged-out .settings-title {
+.settings-logged-out .settings-title {
   margin: 18px 0 10px;
 }
 
-.settings-content--logged-out p {
+.settings-logged-out p {
   margin: 0;
   color: #667a84;
 }
@@ -107,6 +113,10 @@
   .settings-content {
     margin-left: 0;
     padding: 88px 24px 32px;
+  }
+
+  .settings-search-header {
+    margin-bottom: 32px;
   }
 
   .settings-title {
