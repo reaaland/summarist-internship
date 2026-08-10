@@ -56,6 +56,14 @@
   background: #eaf3f7;
 }
 
+.sidebar__link--disabled,
+.sidebar__link--disabled:hover {
+  background: transparent;
+  color: #82939c;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .sidebar__logout {
   text-align: left;
 }
