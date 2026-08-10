@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -11,10 +12,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  BsBookmark,
-  BsBookmarkFill,
-} from "react-icons/bs";
+import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
@@ -34,6 +32,7 @@ export default function BookDetailsPage() {
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [openingBook, setOpeningBook] = useState(false);
 
   const [isSaved, setIsSaved] = useState(false);
   const [checkingLibrary, setCheckingLibrary] = useState(true);
@@ -92,7 +91,6 @@ export default function BookDetailsPage() {
         );
 
         const savedBookSnapshot = await getDoc(savedBookReference);
-
         setIsSaved(savedBookSnapshot.exists());
       } catch (error) {
         console.error("Error checking library:", error);
@@ -103,6 +101,41 @@ export default function BookDetailsPage() {
 
     return unsubscribe;
   }, [book]);
+
+  const handleOpenBook = async () => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      dispatch(openLoginModal());
+      return;
+    }
+
+    if (!book || openingBook) {
+      return;
+    }
+
+    setOpeningBook(true);
+
+    try {
+      if (book.subscriptionRequired) {
+        const userSnapshot = await getDoc(doc(db, "users", user.uid));
+        const plan = userSnapshot.data()?.subscriptionPlan;
+        const hasPremiumAccess = plan === "premium" || plan === "premium-plus";
+
+        if (!hasPremiumAccess) {
+          router.push("/choose-plan");
+          return;
+        }
+      }
+
+      router.push(`/player/${book.id}`);
+    } catch (error) {
+      console.error("Error checking book access:", error);
+      setErrorMessage("Unable to check access right now. Please try again.");
+    } finally {
+      setOpeningBook(false);
+    }
+  };
 
   const handleLibraryToggle = async () => {
     const user = auth.currentUser;
@@ -135,7 +168,6 @@ export default function BookDetailsPage() {
           ...book,
           savedAt: serverTimestamp(),
         });
-
         setIsSaved(true);
       }
     } catch (error) {
@@ -156,13 +188,15 @@ export default function BookDetailsPage() {
 
         <main>
           {loading && (
-            <p className="book-details__status">
-              Loading book...
-            </p>
+            <section className="book-details book-details--loading" aria-busy="true">
+              <div className="book-details__skeleton book-details__skeleton--title" />
+              <div className="book-details__skeleton" />
+              <div className="book-details__skeleton" />
+            </section>
           )}
 
           {!loading && errorMessage && (
-            <p className="book-details__status">
+            <p className="book-details__status" role="alert">
               {errorMessage}
             </p>
           )}
@@ -171,23 +205,14 @@ export default function BookDetailsPage() {
             <section className="book-details">
               <div className="book-details__top">
                 <div className="book-details__content">
-                  <h1 className="book-details__title">
-                      {book.title}
-                    </h1>
+                  <h1 className="book-details__title">{book.title}</h1>
 
-                    {book.subscriptionRequired && (
-                      <span className="book-details__premium">
-                        Premium
-                      </span>
-                    )}
+                  {book.subscriptionRequired && (
+                    <span className="book-details__premium">Premium</span>
+                  )}
 
-                  <p className="book-details__author">
-                    {book.author}
-                  </p>
-
-                  <p className="book-details__subtitle">
-                    {book.subTitle}
-                  </p>
+                  <p className="book-details__author">{book.author}</p>
+                  <p className="book-details__subtitle">{book.subTitle}</p>
 
                   <div className="book-details__info">
                     <span>⭐ {book.averageRating}</span>
@@ -198,74 +223,63 @@ export default function BookDetailsPage() {
                   <div className="book-details__buttons">
                     <button
                       type="button"
-                      onClick={() =>
-                        router.push(`/player/${book.id}`)
-                      }
+                      onClick={() => void handleOpenBook()}
+                      disabled={openingBook}
                     >
-                      Read
+                      {openingBook ? "Opening..." : "Read"}
                     </button>
 
                     <button
                       type="button"
-                      onClick={() =>
-                        router.push(`/player/${book.id}`)
-                      }
+                      onClick={() => void handleOpenBook()}
+                      disabled={openingBook}
                     >
-                      Listen
+                      {openingBook ? "Opening..." : "Listen"}
                     </button>
                   </div>
 
                   <button
                     type="button"
                     className={`book-details__library-button ${
-                      isSaved
-                        ? "book-details__library-button--saved"
-                        : ""
+                      isSaved ? "book-details__library-button--saved" : ""
                     }`}
                     onClick={() => void handleLibraryToggle()}
                     disabled={checkingLibrary || savingLibrary}
                   >
-                    {isSaved ? (
-                      <BsBookmarkFill />
-                    ) : (
-                      <BsBookmark />
-                    )}
-
+                    {isSaved ? <BsBookmarkFill /> : <BsBookmark />}
                     <span>
                       {checkingLibrary
                         ? "Checking library..."
                         : savingLibrary
-                        ? "Updating library..."
-                        : isSaved
-                        ? "Added to My Library"
-                        : "Add title to My Library"}
+                          ? "Updating library..."
+                          : isSaved
+                            ? "Added to My Library"
+                            : "Add title to My Library"}
                     </span>
                   </button>
+                </div>
 
-                <div    className="book-details__image-wrapper">
-                  <img
+                <div className="book-details__image-wrapper">
+                  <Image
                     className="book-details__image"
                     src={book.imageLink}
                     alt={book.title}
+                    width={280}
+                    height={400}
+                    unoptimized
                   />
                 </div>
               </div>
-            </div>
 
               <div className="book-details__section">
                 <h2>What&apos;s it about?</h2>
-
                 <div className="book-details__tags">
                   {book.tags?.map((tag) => (
-                    <span
-                      className="book-details__tag"
-                      key={tag}
-                    >
+                    <span className="book-details__tag" key={tag}>
                       {tag}
                     </span>
                   ))}
                 </div>
-
                 <p>{book.bookDescription}</p>
               </div>
 
@@ -276,10 +290,7 @@ export default function BookDetailsPage() {
 
               <div className="book-details__section">
                 <h2>Key ideas</h2>
-
-                <p className="book-details__pre-line">
-                  {book.keyIdeas}
-                </p>
+                <p className="book-details__pre-line">{book.keyIdeas}</p>
               </div>
             </section>
           )}
