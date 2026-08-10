@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 
 import { auth, db } from "@/firebase/firebase";
 import Sidebar from "@/components/Sidebar";
+import SearchBar from "@/components/SearchBar";
 import type { AppDispatch } from "@/store/store";
 import { openLoginModal } from "@/store/features/authModalSlice";
 import "@/styles/settings.css";
@@ -48,11 +49,18 @@ export default function SettingsPage() {
     return unsubscribe;
   }, []);
 
+  const searchHeader = (
+    <header className="settings-search-header">
+      <SearchBar />
+    </header>
+  );
+
   if (loading) {
     return (
       <div className="settings-page">
         <Sidebar />
         <main className="settings-content" aria-busy="true">
+          {searchHeader}
           <div className="settings-skeleton settings-skeleton--title" />
           <div className="settings-skeleton" />
           <div className="settings-skeleton" />
@@ -65,23 +73,26 @@ export default function SettingsPage() {
     return (
       <div className="settings-page">
         <Sidebar />
-        <main className="settings-content settings-content--logged-out">
-          <Image
-            src="/assets/login.png"
-            alt="Sign in to view your Summarist settings"
-            width={320}
-            height={240}
-            className="settings-login-image"
-          />
-          <h1 className="settings-title">Log in to view your settings.</h1>
-          <p>Your account and subscription details will appear here.</p>
-          <button
-            type="button"
-            className="settings-login-button"
-            onClick={() => dispatch(openLoginModal())}
-          >
-            Log in
-          </button>
+        <main className="settings-content">
+          {searchHeader}
+          <section className="settings-logged-out">
+            <Image
+              src="/assets/login.png"
+              alt="Sign in to view your Summarist settings"
+              width={320}
+              height={240}
+              className="settings-login-image"
+            />
+            <h1 className="settings-title">Log in to view your settings.</h1>
+            <p>Your account and subscription details will appear here.</p>
+            <button
+              type="button"
+              className="settings-login-button"
+              onClick={() => dispatch(openLoginModal())}
+            >
+              Log in
+            </button>
+          </section>
         </main>
       </div>
     );
@@ -92,6 +103,7 @@ export default function SettingsPage() {
       <Sidebar />
 
       <main className="settings-content">
+        {searchHeader}
         <h1 className="settings-title">Settings</h1>
 
         <section className="settings-section">
