@@ -4,8 +4,17 @@
 }
 
 .settings-content {
-  margin-left: 200px;
-  padding: 40px 48px;
+  margin-left: 220px;
+  padding: 48px;
+}
+
+.settings-content--logged-out {
+  display: flex;
+  min-height: 75vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .settings-title {
@@ -15,8 +24,44 @@
   color: #032b41;
 }
 
+.settings-content--logged-out .settings-title {
+  margin: 18px 0 10px;
+}
+
+.settings-content--logged-out p {
+  margin: 0;
+  color: #667a84;
+}
+
+.settings-login-image {
+  width: min(100%, 320px);
+  height: auto;
+}
+
+.settings-login-button,
+.settings-upgrade-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 7px;
+  background: #2bd97f;
+  color: #032b41;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .settings-section {
+  max-width: 720px;
   margin-bottom: 32px;
+  padding: 24px;
+  border: 1px solid #e3eaee;
+  border-radius: 12px;
+  background: #fbfdfe;
 }
 
 .settings-section-title {
@@ -32,7 +77,33 @@
   color: #394547;
 }
 
-@media (max-width: 768px) {
+.settings-skeleton {
+  width: min(100%, 720px);
+  height: 92px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #edf2f4 25%, #f7f9fa 50%, #edf2f4 75%);
+  background-size: 200% 100%;
+  animation: settings-shimmer 1.2s infinite linear;
+}
+
+.settings-skeleton--title {
+  width: 220px;
+  height: 36px;
+  margin-bottom: 40px;
+}
+
+@keyframes settings-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 900px) {
   .settings-content {
     margin-left: 0;
     padding: 88px 24px 32px;
@@ -41,5 +112,11 @@
   .settings-title {
     margin-bottom: 36px;
     font-size: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-skeleton {
+    animation: none;
   }
 }
