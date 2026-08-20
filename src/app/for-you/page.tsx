@@ -101,7 +101,7 @@ useEffect(() => {
           </h2>
 
           <p className="suggested__subtitle">
-            Browse books we think you'll enjoy
+           Browse books we think you&apos;ll enjoy
           </p>
 
           <div className="suggested__books">
