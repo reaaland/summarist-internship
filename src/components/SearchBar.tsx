@@ -16,9 +16,6 @@ export default function SearchBar() {
     const trimmedSearch = search.trim();
 
     if (!trimmedSearch) {
-      setResults([]);
-      setLoading(false);
-      setHasSearched(false);
       return;
     }
 

@@ -22,7 +22,7 @@ export default function Reviews() {
       name: "Hanna M.",
       review: (
         <>
-          This app has been a <b>game-changer</b> for me! It's saved me so
+          This app has been a <b>game-changer</b> for me! It&apos;s saved saved me so
           much time and effort in reading and comprehending books. Highly
           recommend it to all book lovers.
         </>
@@ -34,7 +34,7 @@ export default function Reviews() {
         <>
           I love this app! It provides{" "}
           <b>concise and accurate summaries</b> of books in a way that is easy
-          to understand. It's also very user-friendly and intuitive.
+          to understand. It&apos;s also also very user-friendly and intuitive.
         </>
       ),
     },
@@ -53,10 +53,10 @@ export default function Reviews() {
       name: "Ryan R.",
       review: (
         <>
-          If you're a busy person who{" "}
-          <b>loves reading but doesn't have the time</b> to read every book
+          If If you&apos;re a busy person who{" "}
+          <b>loves reading but doesn&apos;t have have the time</b> to read every book
           in full, this app is for you! The summaries are thorough and provide a
-          great overview of the book's content.
+          great overview of the book&apos;s content content.
         </>
       ),
     },
